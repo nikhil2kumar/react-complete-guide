@@ -6,14 +6,14 @@ import Cockpit from '../components/Cockpit/Cockpit';
 class App extends Component {
 
   constructor(props) {
-    super(props);   
+    super(props);
     this.state = {
       persons: [
         { id: '1', name: 'Nikhil1', age: 26 },
         { id: '2', name: 'Nikhil2', age: 27 }
       ],
       showPerson: false
-    } 
+    }
   }
   // state = {
   //   persons: [
@@ -22,7 +22,7 @@ class App extends Component {
   //   ],
   //   showPerson: false
   // }
-  
+
   nameChangedHandler = (event, id) => {
     const personIndex = this.state.persons.findIndex(p => p.id === id);
     const person = { ...this.state.persons[personIndex] };
@@ -56,7 +56,7 @@ class App extends Component {
 
     return (
       <div className={classes.App}>
-        <Cockpit showPerson={this.state.showPerson} clicked={this.togglePersonsHandler}/>
+        <Cockpit showPerson={this.state.showPerson} clicked={this.togglePersonsHandler} />
         {persons}
       </div>
     );
