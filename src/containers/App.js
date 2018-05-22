@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import classes from './App.css';
 import Persons from '../components/Persons/Persons';
 import Cockpit from '../components/Cockpit/Cockpit';
+import withClass from '../hoc/withClass';
+
+export const AuthContext = React.createContext(false);
 
 class App extends Component {
 
@@ -12,7 +15,9 @@ class App extends Component {
         { id: '1', name: 'Nikhil1', age: 26 },
         { id: '2', name: 'Nikhil2', age: 27 }
       ],
-      showPerson: false
+      showPerson: false,
+      toggleClicked: 0,
+      authenticated: false
     }
   }
   // state = {
@@ -22,6 +27,10 @@ class App extends Component {
   //   ],
   //   showPerson: false
   // }
+
+  authenticate = () => {
+    this.setState({authenticated: true})
+  }
 
   nameChangedHandler = (event, id) => {
     const personIndex = this.state.persons.findIndex(p => p.id === id);
@@ -42,7 +51,25 @@ class App extends Component {
 
   togglePersonsHandler = () => {
     const doesShow = this.state.showPerson;
-    this.setState({ showPerson: !doesShow })
+    this.setState((prevState, props) => {
+      return {
+        showPerson: !doesShow,
+        toggleClicked: prevState.toggleClicked + 1
+      }
+    })
+  }
+
+  static getDerivedStateFromProps = (nextProps, prevState) => {
+    console.log('[getDerivedStateFromProps]', nextProps, prevState);
+    return prevState;
+  }
+
+  getSnapshotBeforeUpdate = () => {
+    console.log('[getSnapshotBeforeUpdate]');
+  }
+
+  componentDidUpdate = () => {
+    console.log('[componentDidUpdate]');
   }
 
   render() {
@@ -55,12 +82,14 @@ class App extends Component {
     }
 
     return (
-      <div className={classes.App}>
-        <Cockpit showPerson={this.state.showPerson} clicked={this.togglePersonsHandler} />
-        {persons}
-      </div>
+      <React.Fragment>
+        <Cockpit showPerson={this.state.showPerson} clicked={this.togglePersonsHandler} logIn={this.authenticate}/>
+        <AuthContext.Provider value={this.state.authenticated}>
+          {persons}
+        </AuthContext.Provider>
+      </React.Fragment>
     );
   }
 }
 
-export default App;
+export default withClass(App, classes.App);
